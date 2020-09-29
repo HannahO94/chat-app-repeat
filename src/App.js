@@ -1,13 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.css";
 
 import MessageForm from "./components/MessageForm";
 import MessageList from "./components/MessageList";
+import styled from "styled-components";
 
 function App() {
-  const [counter, setCounter] = useState(0);
   const [chatRoomData, setChatRoomData] = useState({});
+  const [isHidden, setIsHidden] = useState(true);
 
   function handleGetChatRoom() {
     const url =
@@ -20,31 +20,36 @@ function App() {
         setChatRoomData(data);
       });
   }
+  // function animateOnClick() {
+  //   return setIsHidden(false);
+  // }
+  console.log(isHidden);
 
   useEffect(() => {
     handleGetChatRoom();
   }, []);
 
-  function handleOnClick() {
-    setCounter(counter + 1);
-  }
-
   return (
-    <div className="container">
-      <h1 onClick={handleOnClick}>
-        ChatRoom: {chatRoomData.name} - {counter}
-      </h1>
+    <Div>
+      <HeadingWrapper>
+        <Heading
+          animate={{ x: 100, opacity: 1 }}
+          initial={{ opacity: 0 }}
+          transition={{ duration: 1, delay: 1.2 }}
+        >
+          {chatRoomData.name}
+        </Heading>
+      </HeadingWrapper>
 
-      <div className="row">
-        <div className="col-md-12">
-          <MessageForm
-            handleOnSuccess={handleGetChatRoom}
-            label="Enter you message"
-            placeholder="Ditt meddelande"
-          />
-        </div>
+      <div>
+        <MessageForm
+          handleOnSuccess={handleGetChatRoom}
+          label="Enter you message"
+          placeholder="Ditt meddelande"
+        />
       </div>
-      <div className="row">
+
+      <div>
         <div className="col-md-12">
           {/* Kollar så vi har chatroomdata innan vi renderar messagelist, om vi inte har data renderas en tom sträng */}
           {chatRoomData.messages ? (
@@ -54,8 +59,22 @@ function App() {
           )}
         </div>
       </div>
-    </div>
+    </Div>
   );
 }
 
 export default App;
+
+const Div = styled.div`
+  margin: 1rem;
+`;
+const Heading = styled.h1`
+  cursor: pointer;
+`;
+const HeadingWrapper = styled.div`
+  width: 100%;
+  height: ${(isHidden) => (isHidden ? "100vh" : "20vh")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
